@@ -17,7 +17,7 @@ if($timestamp === false) {
     $timestamp = strtotime($ym . '-01');
 }
 
-// 今日の日付　フォーマット　例）2018-07-3
+// 今日の日付　フォーマット　例）2021-05-9
 $today = date('Y-m-j');
 
 // カレンダーのタイトルを作成　例）2017年7月
@@ -41,74 +41,71 @@ $week = '';
 $week .= str_repeat('<td></td>', $youbi);
 
 for($day = 1; $day <= $day_count; $day++, $youbi++) {
+
     $date = $ym . '-' . $day;
+
     if($today == $date) {
         $week .= '<td class = "today">' . $day;
     } else {
         $week .= '<td>' . $day;
     }
-}
-$week .= '</td>';
+    $week .= '</td>';
 
-// 週終わり、または、月終わりの場合
-if($youbi % 7 == 6 || $day == $day_count) {
-    if($day == $day_count) {
-        // 月の最終日の場合、空セルを追加
-        $week .= str_repeat('<td></td>', 6 - ($youbi % 7));
+    // 週終わり、または、月終わりの場合
+    if($youbi % 7 == 6 || $day == $day_count) {
+
+        if($day == $day_count) {
+            // 月の最終日の場合、空セルを追加
+            $week .= str_repeat('<td></td>', 6 - ($youbi % 7));
+        }
+
+        // weeks配列にtrと$weekを追加する
+        $weeks[] = '<tr>' . $week . '</tr>';
+
+        // weekをリセット
+        $week = '';
     }
-    // weeks配列にtrと$weekを追加する
-    $week[] = '<tr>' . $week . '</tr>';
-    // weekをリセット
-    $week = '';
 }
-
- ?>
+?>
 
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="widtd=device-widtd, initial-scale=1.0">
-    <title>カレンダー</title>
+    <meta charset="utf-8">
+    <title>PHPカレンダー</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP" rel="stylesheet">
     <style>
         .container {
-            margin-top: 60px;
-            margin-bottom: 60px;
-        }
-        .bordered, table td, table th {
-            border-collapse: collapse;
-            border: 1px solid gray;
-            margin-left: auto;
-            margin-right: auto;
+            font-family: 'Noto Sans JP', sans-serif;
+            margin-top: 30px;
+            margin-bottom: 50px;
         }
         h3 {
             margin-bottom: 30px;
-            text-align: center;
         }
         th {
-            height: 50px;
+            height: 30px;
+            text-align: center;
         }
         td {
-            height: 90px;
-            width: 100px;
-            text-align: left;  
+            height: 100px;
         }
         .today {
-            background: yellow;
+            background: pink;
         }
         th:nth-of-type(1), td:nth-of-type(1) {
             color: red;
         }
-        th:nth-of-type(7),td:nth-of-type(7) {
+        th:nth-of-type(7), td:nth-of-type(7) {
             color: blue;
         }
     </style>
 </head>
 <body>
-    <div class = "container">
-        <h3>2021年5月</h3>
-        <table class = "bordered">
+    <div class="container">
+        <h3><a href="?ym=<?php echo $prev; ?>">&lt;</a> <?php echo $html_title; ?> <a href="?ym=<?php echo $next; ?>">&gt;</a></h3>
+        <table class="table table-bordered">
             <tr>
                 <th>日</th>
                 <th>月</th>
@@ -118,51 +115,11 @@ if($youbi % 7 == 6 || $day == $day_count) {
                 <th>金</th>
                 <th>土</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td>9</td>
-                <td>10</td>
-                <td>11</td>
-                <td>12</td>
-                <td>13</td>
-                <td>14</td>
-            </tr>
-            <tr>
-                <td>15</td>
-                <td>16</td>
-                <td>17</td>
-                <td>18</td>
-                <td>19</td>
-                <td>20</td>
-                <td>21</td>
-            </tr>
-            <tr>
-                <td>22</td>
-                <td>23</td>
-                <td>24</td>
-                <td>25</td>
-                <td>26</td>
-                <td>27</td>
-                <td>28</td>
-            </tr>
-            <tr>
-                <td>29</td>
-                <td>30</td>
-                <td>31</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+            <?php
+                foreach ($weeks as $week) {
+                    echo $week;
+                }
+            ?>
         </table>
     </div>
 </body>
