@@ -1,3 +1,69 @@
+<?php
+// タイムゾーンを設定
+date_default_timezone_set('Asia/Tokyo');
+
+// 前月・次月リンクが押された場合は、GETパラメーターから年月を取得
+if(isset($_GET['ym'])){
+    $ym = $_GET['ym'];
+} else {
+    //今月の年月を表示
+    $ym = date('Y-m');
+}
+
+// タイムスタンプを作成し、フォーマットをチェックする
+$timestamp = strtotime($ym . '-01');
+if($timestamp === false) {
+    $ym = date('Y-m');
+    $timestamp = strtotime($ym . '-01');
+}
+
+// 今日の日付　フォーマット　例）2018-07-3
+$today = date('Y-m-j');
+
+// カレンダーのタイトルを作成　例）2017年7月
+$html_title = date('Y年n月', $timestamp);
+
+// 前月、次月の年月を取得
+$prev = date('Y-m', strtotime('-1 month', $timestamp));
+$next = date('Y-m', strtotime('+1 month', $timestamp));
+
+// 該当月の日数を取得
+$day_count = date('t', $timestamp);
+
+// 1日が何曜日か　0:日 1:月
+$youbi = date('w', mktime(0, 0, 0, date('m', $timestamp), 1, date('Y', $timestamp)));
+
+// カレンダー作成の準備
+$weeks = [];
+$week = '';
+
+// 第1週目：空のセルの追加
+$week .= str_repeat('<td></td>', $youbi);
+
+for($day = 1; $dai <= $day_count; $day++, $youbi++) {
+    $date = $ym . '-' . $day;
+    if($today == $date) {
+        $week .= '<td class = "today">' . $day;
+    } else {
+        $week .= '<td>' . $day;
+    }
+}
+$week .= '</td>';
+
+// 週終わり、または、月終わりの場合
+if($youbi % 7 == 6 || $day == $day_count) {
+    if($day == $day_count) {
+        // 月の最終日の場合、空セルを追加
+        $week .= str_repeat('<td></td>', 6 - ($youbi % 7));
+    }
+    // weeks配列にtrと$weekを追加する
+    $week[] = '<tr>' . $week . '</tr>';
+    // weekをリセット
+    $week = '';
+}
+
+ ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -28,9 +94,9 @@
             width: 100px;
             text-align: left;  
         }
-        /* .today {
+        .today {
             background: yellow;
-        } */
+        }
         th:nth-of-type(1), td:nth-of-type(1) {
             color: red;
         }
@@ -63,7 +129,7 @@
             </tr>
             <tr>
                 <td>8</td>
-                <td class = "today">9</td>
+                <td>9</td>
                 <td>10</td>
                 <td>11</td>
                 <td>12</td>
