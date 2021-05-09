@@ -40,7 +40,7 @@ $week = '';
 // 第1週目：空のセルの追加
 $week .= str_repeat('<td></td>', $youbi);
 
-for($day = 1; $dai <= $day_count; $day++, $youbi++) {
+for($day = 1; $day <= $day_count; $day++, $youbi++) {
     $date = $ym . '-' . $day;
     if($today == $date) {
         $week .= '<td class = "today">' . $day;
